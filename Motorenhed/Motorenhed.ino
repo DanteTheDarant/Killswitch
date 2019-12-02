@@ -1,9 +1,9 @@
 #include <SPI.h> //libraries needed for at bruge display
 #include <Wire.h> //findes hvis man søger i Arduino IDE'en
 #include <Adafruit_GFX.h> //til at tegne ting osv
-#include <Adafruit_SSD1306.h>
+#include <Adafruit_SSD1306.h>//Til Display
 #include <SoftwareSerial.h>
-#include <TinyGPS.h>
+#include <TinyGPS.h>//til GPS
 
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
