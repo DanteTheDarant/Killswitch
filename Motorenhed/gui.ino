@@ -21,7 +21,7 @@ void topGUI(String nowM) { //tegner top linjen på skærmen med navnet på nuvæ
   display.setCursor(posNowM_x, pos0_y);
   display.println(nowM);
   display.setCursor(posUr_x, pos0_y);
-  display.println(getTime(1000)); //her skal indsættes en funktion der henter ur string
+  display.println(getTime()); //her skal indsættes en funktion der henter ur string
 
   display.drawLine(0, 9, 127, 9, SSD1306_WHITE);
 }
@@ -39,10 +39,10 @@ void midGUI(String element1, String element2) {
 void bottomGUI(String nextM, String backM) {
   //delen af UI'et der viser de andre menuer
   /*
-  if (nextM.length() >= 3)
-  {
+    if (nextM.length() >= 3)
+    {
     nextM.remove(nextM.length()-1, 2);
-  }
+    }
   */
   display.setCursor(0, pos3_y);
   display.println(backM);
@@ -63,32 +63,62 @@ void bottomGUI(String nextM, String backM) {
   display.drawLine(rStregPos, hStregPos, rStregPos, 63, SSD1306_WHITE);
 }
 
-void kursGUI() {  
-  display.clearDisplay();
-  String main1 = "99 knob";  //funktion for hastighed skal indsættes
-  String main2 = "201";      //funktion for kurs skal indsættes
-  String nuvaerendeMenu = kursMenu;    //nuværende menu
-  String forrigeMenu = gpsMenu; //menu på venstre knap
-  String naesteMenu = gemtPosMenu;  //menu på højre knap
-
-  topGUI(nuvaerendeMenu);
-  midGUI(main1, main2);
-  bottomGUI(naesteMenu, forrigeMenu);
-
-  display.display();
-
+void connectGUI() { //GUI til connection med armbånd menu
 }
 
-void gpsGUI() {
+void gpsGUI() { //GUI til GPS menu
   display.clearDisplay();
-  String main1 = "N:056 31.2"; //funktion for koordinat skal indsættes
-  String main2 = "E:009 42.1"; //funktion for koordinat skal indsættes
-  String nuvaerendeMenu = gpsMenu;    //nuværende menu
-  String forrigeMenu = gemtPosMenu; //menu på venstre knap
-  String naesteMenu = kursMenu;  //menu på højre knap
-
+  String main1 = lat(); //funktion for koordinat
+  String main2 = lon(); //funktion for koordinat
+  String nuvaerendeMenu = gpsMenu;    //nuvaerende menu
+  String forrigeMenu = connectMenu; //menu på venstre knap
+  String naesteMenu = kursMenu;  //menu på hoejre knap
   topGUI(nuvaerendeMenu);
   midGUI(main1, main2);
   bottomGUI(naesteMenu, forrigeMenu);
   display.display();
+}
+
+void kursGUI() {  //GUI til kurs og fart menu
+  display.clearDisplay();
+  String main1 = getSpeed();  //funktion for hastighed
+  String main2 = "201";      //funktion for kurs skal indsættes
+  String nuvaerendeMenu = kursMenu;    //nuvaerende menu
+  String forrigeMenu = gpsMenu; //menu på venstre knap
+  String naesteMenu = gemtPosMenu;  //menu på hoejre knap
+  topGUI(nuvaerendeMenu);
+  midGUI(main1, main2);
+  bottomGUI(naesteMenu, forrigeMenu);
+  display.display();
+}
+
+void gPosGUI() { //GUI til menuen med den gemte position
+  display.clearDisplay();
+  String main1 = "gemt1"; //koordinat
+  String main2 = "gemt2"; //koordinat
+  String nuvaerendeMenu = gemtPosMenu;    //nuvaerende menu
+  String forrigeMenu = kursMenu; //menu på venstre knap
+  String naesteMenu = gemtDistMenu;  //menu på højre knap
+  topGUI(nuvaerendeMenu);
+  midGUI(main1, main2);
+  bottomGUI(naesteMenu, forrigeMenu);
+  display.display();
+}
+
+void gDistGUI() {
+  display.clearDisplay();
+  String main1 = "dist"; //funktion for dist til gemt pos
+  String main2 = "kurs"; //funktion for kurs til gemt pos
+  String nuvaerendeMenu = gemtDistMenu;    //nuvaerende menu
+  String forrigeMenu = gemtPosMenu; //menu på venstre knap
+  String naesteMenu = connectMenu;  //menu på hoejre knap
+  topGUI(nuvaerendeMenu);
+  midGUI(main1, main2);
+  bottomGUI(naesteMenu, forrigeMenu);
+  display.display();
+}
+
+void alarmGUI() {
+  //vis advarsel og gemte koordinater
+  //evt hvid baggrund
 }

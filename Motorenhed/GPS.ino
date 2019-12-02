@@ -1,4 +1,4 @@
-String lat(unsigned long ms) {
+String lat() {
   float lat = 0;
   float lon = 0;
   unsigned long fix_age;
@@ -15,14 +15,17 @@ String lat(unsigned long ms) {
           Serial.println("Possible stale data");
         } else {
           // Convert into degrees-decimal-minutes-format
+          forbindelse = 1;
           return convertPos(lat, true);
         }
       }
     }
   } while (millis() - start < ms);
+  forbindelse = 0;
+  return "FEJL";
 }
 
-String lon(unsigned long ms) {
+String lon() {
   float lat = 0;
   float lon = 0;
   unsigned long fix_age;
@@ -39,11 +42,14 @@ String lon(unsigned long ms) {
           Serial.println("Possible stale data");
         } else {
           // Convert into degrees-decimal-minutes-format
+          forbindelse = 1;
           return convertPos(lon, false);
         }
       }
     }
   } while (millis() - start < ms);
+  forbindelse = 0;
+  return "FEJL";
 }
 
 String convertPos(float value, boolean lat) {
@@ -80,31 +86,37 @@ String convertPos(float value, boolean lat) {
   return coordinate;
 }
 
-String getSpeed(unsigned long ms) {
+String getSpeed() {
   unsigned long start = millis();
   do {
     while (gpsSerial.available()) { // check for gps data
       if (gps.encode(gpsSerial.read())) // encode gps data
       {
+        forbindelse = 1;
         return String(gps.f_speed_knots(), 0);
       }
     }
   } while (millis() - start < ms);
+  forbindelse = 0;
+  return "FEJL";
 }
 
-String getCourse(unsigned long ms) { // VIRKER IKKE, SKAL ARBEJDES PÅ
+String getCourse() { // VIRKER IKKE, SKAL ARBEJDES PÅ
   unsigned long start = millis();
   do {
     while (gpsSerial.available()) { // check for gps data
       if (gps.encode(gpsSerial.read())) // encode gps data
       {
+        forbindelse = 1;
         return String(gps.f_course(), 1);
       }
     }
   } while (millis() - start < ms);
+  forbindelse = 0;
+  return "FEJL";
 }
 
-String getTime(unsigned long ms) { // VIRKER IKKE, SKAL ARBEJDES PÅ
+String getTime() {
   int gpsYear;
   unsigned long fix_age;
   byte gpsMonth, gpsDay, gpsHour, gpsMinute, gpsSecond, gpsHundredth;
@@ -121,8 +133,11 @@ String getTime(unsigned long ms) { // VIRKER IKKE, SKAL ARBEJDES PÅ
           tid.concat("0");
         }
         tid.concat(gpsMinute);
+        forbindelse = 0;
         return tid;
       }
     }
   } while (millis() - start < ms);
+  forbindelse = 0;
+  return "FEJL";
 }
