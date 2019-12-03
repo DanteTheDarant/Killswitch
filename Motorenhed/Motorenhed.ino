@@ -7,7 +7,7 @@
 #include <nRF24L01.h>//til radio
 #include <RF24.h>//til radio
 
-//Display opsætning
+//Display opsaetning
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
 // Declaration for an SSD1306 display connected to I2C (SDA, SCL pins)
@@ -56,10 +56,12 @@ void setup() {
   pinMode(knapL, INPUT);
   pinMode(knapR, INPUT);
   digitalWrite(motorPin, LOW);
-  while (lastmessage <= 2000 || knapL == 1 && knapR == 1) { //checker om vores
+  while (lastmessage <= 2000) { //saa armbaand faar forbindelse foer kode slukker motoren
     connectGUI();
+    if (knapL == 0 && knapR == 0) {
+      break;
+    }
   }
-
 }
 
 void loop() {
@@ -69,24 +71,20 @@ void loop() {
   if (knapL == 1) {
     menuCount++;
   }
-  switch (menuCount % 5) {
+  switch (menuCount % 4) {
     case 0:
-      connectGUI();
-      //en menu
-      break;
-    case 1:
       gpsGUI();
       //en menu
       break;
-    case 2:
+    case 1:
       kursGUI();
       //en menu
       break;
-    case 3:
+    case 2:
       gPosGUI();
       //en menu
       break;
-    case 4:
+    case 3:
       gDistGUI();
       //en menu
       break;
