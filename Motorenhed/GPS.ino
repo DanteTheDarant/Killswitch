@@ -4,8 +4,8 @@ String lat() {
   unsigned long fix_age;
   unsigned long start = millis();
   do {
-    while (gpsSerial.available()) { // check for gps data
-      if (gps.encode(gpsSerial.read())) { // encode gps data
+    while (Serial2.available()) { // check for gps data
+      if (gps.encode(Serial2.read())) { // encode gps data
         gps.f_get_position(&lat, &lon, &fix_age); // get latitude and longitude
 
         // Check validity of data
@@ -31,8 +31,8 @@ String lon() {
   unsigned long fix_age;
   unsigned long start = millis();
   do {
-    while (gpsSerial.available()) { // check for gps data
-      if (gps.encode(gpsSerial.read())) // encode gps data
+    while (Serial2.available()) { // check for gps data
+      if (gps.encode(Serial2.read())) // encode gps data
       {
         gps.f_get_position(&lat, &lon); // get latitude and longitude
 
@@ -89,8 +89,8 @@ String convertPos(float value, boolean lat) {
 String getSpeed() {
   unsigned long start = millis();
   do {
-    while (gpsSerial.available()) { // check for gps data
-      if (gps.encode(gpsSerial.read())) // encode gps data
+    while (Serial2.available()) { // check for gps data
+      if (gps.encode(Serial2.read())) // encode gps data
       {
         forbindelse = 1;
         return String(gps.f_speed_knots(), 0);
@@ -104,8 +104,8 @@ String getSpeed() {
 String getCourse() { // VIRKER IKKE, SKAL ARBEJDES PÅ
   unsigned long start = millis();
   do {
-    while (gpsSerial.available()) { // check for gps data
-      if (gps.encode(gpsSerial.read())) // encode gps data
+    while (Serial2.available()) { // check for gps data
+      if (gps.encode(Serial2.read())) // encode gps data
       {
         forbindelse = 1;
         return String(gps.f_course(), 1);
@@ -122,8 +122,8 @@ String getTime() {
   byte gpsMonth, gpsDay, gpsHour, gpsMinute, gpsSecond, gpsHundredth;
   unsigned long start = millis();
   do {
-    while (gpsSerial.available()) { // check for gps data
-      if (gps.encode(gpsSerial.read())) // encode gps data
+    while (Serial2.available()) { // check for gps data
+      if (gps.encode(Serial2.read())) // encode gps data
       {
         gps.crack_datetime(&gpsYear, &gpsMonth, &gpsDay, &gpsHour, &gpsMinute, &gpsSecond, &gpsHundredth, &fix_age);
         String tid = "";

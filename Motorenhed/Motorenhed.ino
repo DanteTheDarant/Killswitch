@@ -2,10 +2,15 @@
 #include <Wire.h> //findes hvis man søger i Arduino IDE'en
 #include <Adafruit_GFX.h> //til at tegne ting osv
 #include <Adafruit_SSD1306.h>//Til Display
-#include <SoftwareSerial.h>
 #include <TinyGPS.h>//til GPS
 #include <nRF24L01.h>//til radio
 #include <RF24.h>//til radio
+
+//pin opsaetning
+const int motorPin = 14; //pin hvorpå relæ er connect
+const int knapL = 35;
+const int knapR = 33; //kontakter til at styre rundt i menuer
+const int buzzer = 12;
 
 //Display opsaetning
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -17,10 +22,10 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 //Radio opsætning
 RF24 radio(7, 8); // CE, CSN
 const byte address[6] = "00000";
-unsigned long lastmessage = 0;
+unsigned long lastMessage = 2000000;
+int textInt = 0;
 
 //GPS opsætning
-SoftwareSerial gpsSerial(4, 5); // Setting up GPS-pins for RX and TX
 TinyGPS gps; // Creating GPS object
 const int pos0_y = 0;     //y-position på info linje i top
 const int posNowM_x = 15; //x-position for nuværende menu
@@ -29,10 +34,6 @@ const int pos1_y = 12;    //y-position på første main element
 const int pos2_y = 30;    //y-position på andet main element
 const int pos3_y = 49;    //y-position på menuskift-element
 unsigned long ms = 1000; //til GPS
-
-const int motorPin = 14; //pin hvorpå relæ er connect
-const int knapL = 35;
-const int knapR = 33; //kontakter til at styre rundt i menuer
 
 // Menu navne
 const String velkomstMenu = "Welcome";      // idk hvorfor det er på engelsk
@@ -49,17 +50,23 @@ unsigned int menuCount = 10000; //counter til hvilken menu vi er i
 
 void setup() {
   Serial.begin(9600);
-  gpsSerial.begin(9600);
+  Serial2.begin(9600);
   initDisplay();  //initialiserer displayet
   radioSetup();   //initialiserer GPS
   pinMode(motorPin, OUTPUT);
   pinMode(knapL, INPUT);
   pinMode(knapR, INPUT);
+  pinMode(buzzer, OUTPUT);
   digitalWrite(motorPin, LOW);
-  while (lastmessage <= 2000) { //saa armbaand faar forbindelse foer kode slukker motoren
+  int i = 0;
+  while (i == 0) { //saa armbaand faar forbindelse foer kode slukker motoren
     connectGUI();
-    if (knapL == 0 && knapR == 0) {
-      break;
+    if (knapL == 1 && knapR == 1) {
+      i = 1;
+    }
+    if (textInt==11) {
+      lastMessage = millis();
+      i = 1;
     }
   }
 }
