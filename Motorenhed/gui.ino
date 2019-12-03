@@ -21,14 +21,12 @@ void topGUI(String nowM) { //tegner top linjen på skærmen med navnet på nuvæ
   display.setCursor(posNowM_x, pos0_y);
   display.println(nowM);
   display.setCursor(posUr_x, pos0_y);
-  display.println(getTime()); //her skal indsættes en funktion der henter ur string
-
-  display.drawLine(0, 9, 127, 9, SSD1306_WHITE);
+  display.println(getTime()); //funktion der henter tid fra GPS
+  display.drawLine(0, 9, 127, 9, SSD1306_WHITE); //linje til at adskille top linje fra resten
 }
 
 void midGUI(String element1, String element2) {
   //main del af UI'et
-  //display.fillRect(0, 9, 128, 35, SSD1306_WHITE);
   display.setTextSize(2);
   display.setCursor(1, pos1_y);
   display.println(element1);
@@ -38,12 +36,6 @@ void midGUI(String element1, String element2) {
 
 void bottomGUI(String nextM, String backM) {
   //delen af UI'et der viser de andre menuer
-  /*
-    if (nextM.length() >= 3)
-    {
-    nextM.remove(nextM.length()-1, 2);
-    }
-  */
   display.setCursor(0, pos3_y);
   display.println(backM);
   display.setCursor(128 - (nextM.length() * 12), pos3_y);
@@ -63,14 +55,14 @@ void bottomGUI(String nextM, String backM) {
   display.drawLine(rStregPos, hStregPos, rStregPos, 63, SSD1306_WHITE);
 }
 
-void connectGUI(){ //GUI til connection med armbånd menu
+void connectGUI() { //GUI til connection med armbånd menu
   display.clearDisplay();
-  display.fillRect(0,0,128,64,SSD1306_WHITE);
-  display.fillRect(30,15,30,30,SSD1306_BLACK);
+  display.fillRect(0, 0, 128, 64, SSD1306_WHITE);
+  
   display.display();
 }
 
-void gpsGUI(){ //GUI til GPS menu
+void gpsGUI() { //GUI til GPS menu
   display.clearDisplay();
   String main1 = lat(); //funktion for koordinat
   String main2 = lon(); //funktion for koordinat
@@ -83,7 +75,7 @@ void gpsGUI(){ //GUI til GPS menu
   display.display();
 }
 
-void kursGUI(){  //GUI til kurs og fart menu
+void kursGUI() { //GUI til kurs og fart menu
   display.clearDisplay();
   String main1 = getSpeed();  //funktion for hastighed
   String main2 = "201";      //funktion for kurs skal indsættes
@@ -96,7 +88,7 @@ void kursGUI(){  //GUI til kurs og fart menu
   display.display();
 }
 
-void gPosGUI(){ //GUI til menuen med den gemte position
+void gPosGUI() { //GUI til menuen med den gemte position
   display.clearDisplay();
   String main1 = "gemt1"; //koordinat
   String main2 = "gemt2"; //koordinat
@@ -109,7 +101,7 @@ void gPosGUI(){ //GUI til menuen med den gemte position
   display.display();
 }
 
-void gDistGUI(){
+void gDistGUI() {
   display.clearDisplay();
   String main1 = "dist"; //funktion for dist til gemt pos
   String main2 = "kurs"; //funktion for kurs til gemt pos
@@ -122,7 +114,7 @@ void gDistGUI(){
   display.display();
 }
 
-void alarmGUI(){
+void alarmGUI() {
   //vis advarsel og gemte koordinater
   //evt hvid baggrund
 }
