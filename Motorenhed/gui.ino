@@ -46,11 +46,11 @@ void bottomGUI(String nextM, String backM) {
   int lStregPos = backM.length() * 12;                // venstre/midter-position
   int rStregPos = 127 - (nextM.length() * 12) - 2;    // hoejre/midter-position
 
-  // venstre streg
+  // venstre linje rundt om tekst
   display.drawLine(0, hStregPos, lStregPos, hStregPos, SSD1306_WHITE);
   display.drawLine(lStregPos, hStregPos, lStregPos, 63, SSD1306_WHITE);
 
-  // højre streg
+  // hoejre linje rundt om tekst
   display.drawLine(127, hStregPos, rStregPos, hStregPos, SSD1306_WHITE);
   display.drawLine(rStregPos, hStregPos, rStregPos, 63, SSD1306_WHITE);
 }
@@ -58,24 +58,25 @@ void bottomGUI(String nextM, String backM) {
 void connectGUI() { //GUI til connection med armbånd menu
   display.clearDisplay();
   display.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SSD1306_WHITE);
+  topGUI("CONNECT");
   String connectText = "Tilslut";
   display.setTextColor(SSD1306_INVERSE);
-  display.setCursor(1,10);
+  display.setCursor(1,12);
   display.setTextSize(2);
   display.println(connectText);
-  display.setCursor(1,45);
+  display.setCursor(1,47);
   display.setTextSize(1);
-  display.println("Press both buttons to bypass safety");
+  display.println("Bypass ved tryk på begge knapper");
   display.display();
 }
 
 void gpsGUI() { //GUI til GPS menu
   display.clearDisplay();
-  String main1 = lat(); //funktion for koordinat
-  String main2 = lon(); //funktion for koordinat
+  String main1 = lat();               //funktion for koordinat
+  String main2 = lon();               //funktion for koordinat
   String nuvaerendeMenu = gpsMenu;    //nuvaerende menu
-  String forrigeMenu = gemtDistMenu; //menu på venstre knap
-  String naesteMenu = kursMenu;  //menu på hoejre knap
+  String forrigeMenu = gemtDistMenu;  //menu på venstre knap
+  String naesteMenu = kursMenu;       //menu på hoejre knap
   topGUI(nuvaerendeMenu);
   midGUI(main1, main2);
   bottomGUI(naesteMenu, forrigeMenu);
@@ -84,11 +85,11 @@ void gpsGUI() { //GUI til GPS menu
 
 void kursGUI() { //GUI til kurs og fart menu
   display.clearDisplay();
-  String main1 = getSpeed();  //funktion for hastighed
-  String main2 = "201";      //funktion for kurs skal indsættes
-  String nuvaerendeMenu = kursMenu;    //nuvaerende menu
-  String forrigeMenu = gpsMenu; //menu på venstre knap
-  String naesteMenu = gemtPosMenu;  //menu på hoejre knap
+  String main1 = getSpeed();          //funktion for hastighed
+  String main2 = "201";               //funktion for kurs skal indsættes
+  String nuvaerendeMenu = kursMenu;   //nuvaerende menu
+  String forrigeMenu = gpsMenu;       //menu på venstre knap
+  String naesteMenu = gemtPosMenu;    //menu på hoejre knap
   topGUI(nuvaerendeMenu);
   midGUI(main1, main2);
   bottomGUI(naesteMenu, forrigeMenu);
@@ -97,11 +98,11 @@ void kursGUI() { //GUI til kurs og fart menu
 
 void gPosGUI() { //GUI til menuen med den gemte position
   display.clearDisplay();
-  String main1 = "gemt1"; //koordinat
-  String main2 = "gemt2"; //koordinat
-  String nuvaerendeMenu = gemtPosMenu;    //nuvaerende menu
-  String forrigeMenu = kursMenu; //menu på venstre knap
-  String naesteMenu = gemtDistMenu;  //menu på højre knap
+  String main1 = "gemt1";               //gemt koordinat N
+  String main2 = "gemt2";               //gemt koordinat E
+  String nuvaerendeMenu = gemtPosMenu;  //nuvaerende menu
+  String forrigeMenu = kursMenu;        //menu på venstre knap
+  String naesteMenu = gemtDistMenu;     //menu på højre knap
   topGUI(nuvaerendeMenu);
   midGUI(main1, main2);
   bottomGUI(naesteMenu, forrigeMenu);
@@ -110,11 +111,11 @@ void gPosGUI() { //GUI til menuen med den gemte position
 
 void gDistGUI() {
   display.clearDisplay();
-  String main1 = "dist"; //funktion for dist til gemt pos
-  String main2 = "kurs"; //funktion for kurs til gemt pos
-  String nuvaerendeMenu = gemtDistMenu;    //nuvaerende menu
-  String forrigeMenu = gemtPosMenu; //menu på venstre knap
-  String naesteMenu = gpsMenu;  //menu på hoejre knap
+  String main1 = "dist";                //funktion for dist til gemt pos
+  String main2 = "kurs";                //funktion for kurs til gemt pos
+  String nuvaerendeMenu = gemtDistMenu; //nuvaerende menu
+  String forrigeMenu = gemtPosMenu;     //menu på venstre knap
+  String naesteMenu = gpsMenu;          //menu på hoejre knap
   topGUI(nuvaerendeMenu);
   midGUI(main1, main2);
   bottomGUI(naesteMenu, forrigeMenu);
@@ -122,6 +123,13 @@ void gDistGUI() {
 }
 
 void alarmGUI() {
-  //vis advarsel og gemte koordinater
-  //evt hvid baggrund
+  display.clearDisplay();
+  display.fillRect(0,0,SCREEN_WIDTH,SCREEN_HEIGHT,SSD1306_WHITE);
+  display.drawTriangle(41,1,86,1,64,40,SSD1306_BLACK);
+  display.setTextSize(1);
+  display.setCursor(1,44);
+  display.println("MOB, position gemt");
+  display.setCursor(1,54);
+  display.println("Bypass ved tryk på begge knapper");
+  display.display();
 }

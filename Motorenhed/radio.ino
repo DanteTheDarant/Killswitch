@@ -34,12 +34,13 @@ void radioSetup() {
 }
 
 ISR(TIMER1_COMPA_vect) {
+  Serial.print(millis());
+  Serial.println("  interrupt");
   if (lastMessage + 2000 < millis()) {
     while (true) {
       digitalWrite(motorPin, HIGH);
-      tone(buzzer, 1000,1000);
+      tone(buzzer, 1000, 1000);
       Serial.println("test2");
     }
-
   }
 }

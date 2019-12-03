@@ -8,8 +8,8 @@
 
 //pin opsaetning
 const int motorPin = 14; //pin hvorpå relæ er connect
-const int knapL = 35;
-const int knapR = 33; //kontakter til at styre rundt i menuer
+const int knapL = 33;
+const int knapR = 35; //kontakter til at styre rundt i menuer
 const int buzzer = 12;
 
 //Display opsaetning
@@ -58,13 +58,13 @@ void setup() {
   pinMode(knapR, INPUT);
   pinMode(buzzer, OUTPUT);
   digitalWrite(motorPin, LOW);
+  connectGUI();
   int i = 0;
   while (i == 0) { //saa armbaand faar forbindelse foer kode slukker motoren
-    connectGUI();
-    if (knapL == 1 && knapR == 1) {
+    if (digitalRead(knapL) == HIGH || digitalRead(knapR) == HIGH) {
       i = 1;
     }
-    if (textInt==11) {
+    if (textInt == 11) {
       lastMessage = millis();
       i = 1;
     }
@@ -72,10 +72,12 @@ void setup() {
 }
 
 void loop() {
-  if (knapL == 1) {
+  Serial.print(millis());
+  Serial.println("  start");
+  if (digitalRead(knapL) == HIGH) {
     menuCount--;
   }
-  if (knapL == 1) {
+  else if (digitalRead(knapR) == HIGH) {
     menuCount++;
   }
   switch (menuCount % 4) {
@@ -96,4 +98,6 @@ void loop() {
       //en menu
       break;
   }
+  Serial.print(millis());
+  Serial.println("  stop");
 }
