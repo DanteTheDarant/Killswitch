@@ -1,15 +1,13 @@
-void radioCheck() {
-  int textInt = 0;
+int radioCheck() {
+  textInt = 0;
   if (radio.available()) {
     char text[32] = "";
     radio.read(&text, sizeof(text));
     textInt = atoi(text);
   }
   if (textInt == 11) {
-    lastmessage = millis();
-    //Serial.print("Lastmessage: ");Serial.println(lastmessage);
+    lastMessage = millis();
   }
-  //Serial.print("Læst værdi: ");Serial.println(textInt);
 }
 void radioSetup() {
   radio.begin();
@@ -25,21 +23,23 @@ void radioSetup() {
   TCCR1B = 0;// same for TCCR1B
   TCNT1  = 0;//initialize counter value to 0
   // set compare match register for 5.56hz increments
-  OCR1A = 11240;// (must be <65536)
+  OCR1A = 17360;// (must be <65536)
   // turn on CTC mode
   TCCR1B |= (1 << WGM12);
-  // Set CS10 and CS12 bits for 256 prescaler
-  TCCR1B |= (1 << CS12) | (0 << CS11) | (0 << CS10);
+  // Set CS10 and CS12 bits for 1024 prescaler
+  TCCR1B |= (1 << CS12) | (0 << CS11) | (1 << CS10);
   // enable timer compare interrupt
   TIMSK1 |= (1 << OCIE1A);
   sei(); //tillad interrupts
 }
 
 ISR(TIMER1_COMPA_vect) {
-  if (lastmessage + 2000 < millis()) {
-    //    Serial.print("Lastmessage: "); Serial.println(lastmessage);
-    //    Serial.print("millis: "); Serial.println(millis());
-    //    Serial.print("Stop motoren");
-    digitalWrite(motorPin, HIGH);
+  if (lastMessage + 2000 < millis()) {
+    while (true) {
+      digitalWrite(motorPin, HIGH);
+      tone(buzzer, 1000,1000);
+      Serial.println("test2");
+    }
+
   }
 }

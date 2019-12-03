@@ -57,8 +57,15 @@ void bottomGUI(String nextM, String backM) {
 
 void connectGUI() { //GUI til connection med armbånd menu
   display.clearDisplay();
-  display.fillRect(0, 0, 128, 64, SSD1306_WHITE);
-  
+  display.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SSD1306_WHITE);
+  String connectText = "Tilslut";
+  display.setTextColor(SSD1306_INVERSE);
+  display.setCursor(1,10);
+  display.setTextSize(2);
+  display.println(connectText);
+  display.setCursor(1,45);
+  display.setTextSize(1);
+  display.println("Press both buttons to bypass safety");
   display.display();
 }
 
