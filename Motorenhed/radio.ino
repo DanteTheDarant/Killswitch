@@ -37,9 +37,9 @@ void radioSetup() {
 
 ISR(TIMER1_COMPA_vect) {
   if (lastmessage + 2000 < millis()) {
-//    Serial.print("Lastmessage: "); Serial.println(lastmessage);
-//    Serial.print("millis: "); Serial.println(millis());
-//    Serial.print("Stop motoren");
+    //    Serial.print("Lastmessage: "); Serial.println(lastmessage);
+    //    Serial.print("millis: "); Serial.println(millis());
+    //    Serial.print("Stop motoren");
     digitalWrite(motorPin, HIGH);
   }
 }

@@ -7,7 +7,6 @@
 #include <nRF24L01.h>//til radio
 #include <RF24.h>//til radio
 
-
 //Display opsætning
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
 #define SCREEN_HEIGHT 64 // OLED display height, in pixels
@@ -46,7 +45,7 @@ const String alarmMenu = "Alarm";
 
 int forbindelse = 0;//fortaeller om der er GPS forbindelse
 
-unsigned int menuCount = 1; //counter til hvilken menu vi er i
+unsigned int menuCount = 10000; //counter til hvilken menu vi er i
 
 void setup() {
   Serial.begin(9600);
@@ -54,11 +53,22 @@ void setup() {
   initDisplay();  //initialiserer displayet
   radioSetup();   //initialiserer GPS
   pinMode(motorPin, OUTPUT);
+  pinMode(knapL, INPUT);
+  pinMode(knapR, INPUT);
   digitalWrite(motorPin, LOW);
-  lastmessage = millis();//for at sikre den ikke starter med at tro der ikke er forbindelse
+  while (lastmessage <= 2000 || knapL == 1 && knapR == 1) { //checker om vores
+    connectGUI();
+  }
+
 }
 
 void loop() {
+  if (knapL == 1) {
+    menuCount--;
+  }
+  if (knapL == 1) {
+    menuCount++;
+  }
   switch (menuCount % 5) {
     case 0:
       connectGUI();
