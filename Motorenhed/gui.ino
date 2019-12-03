@@ -63,15 +63,19 @@ void bottomGUI(String nextM, String backM) {
   display.drawLine(rStregPos, hStregPos, rStregPos, 63, SSD1306_WHITE);
 }
 
-void connectGUI() { //GUI til connection med armbånd menu
+void connectGUI(){ //GUI til connection med armbånd menu
+  display.clearDisplay();
+  display.fillRect(0,0,128,64,SSD1306_WHITE);
+  display.fillRect(30,15,30,30,SSD1306_BLACK);
+  display.display();
 }
 
-void gpsGUI() { //GUI til GPS menu
+void gpsGUI(){ //GUI til GPS menu
   display.clearDisplay();
   String main1 = lat(); //funktion for koordinat
   String main2 = lon(); //funktion for koordinat
   String nuvaerendeMenu = gpsMenu;    //nuvaerende menu
-  String forrigeMenu = connectMenu; //menu på venstre knap
+  String forrigeMenu = gemtDistMenu; //menu på venstre knap
   String naesteMenu = kursMenu;  //menu på hoejre knap
   topGUI(nuvaerendeMenu);
   midGUI(main1, main2);
@@ -79,7 +83,7 @@ void gpsGUI() { //GUI til GPS menu
   display.display();
 }
 
-void kursGUI() {  //GUI til kurs og fart menu
+void kursGUI(){  //GUI til kurs og fart menu
   display.clearDisplay();
   String main1 = getSpeed();  //funktion for hastighed
   String main2 = "201";      //funktion for kurs skal indsættes
@@ -92,7 +96,7 @@ void kursGUI() {  //GUI til kurs og fart menu
   display.display();
 }
 
-void gPosGUI() { //GUI til menuen med den gemte position
+void gPosGUI(){ //GUI til menuen med den gemte position
   display.clearDisplay();
   String main1 = "gemt1"; //koordinat
   String main2 = "gemt2"; //koordinat
@@ -105,20 +109,20 @@ void gPosGUI() { //GUI til menuen med den gemte position
   display.display();
 }
 
-void gDistGUI() {
+void gDistGUI(){
   display.clearDisplay();
   String main1 = "dist"; //funktion for dist til gemt pos
   String main2 = "kurs"; //funktion for kurs til gemt pos
   String nuvaerendeMenu = gemtDistMenu;    //nuvaerende menu
   String forrigeMenu = gemtPosMenu; //menu på venstre knap
-  String naesteMenu = connectMenu;  //menu på hoejre knap
+  String naesteMenu = gpsMenu;  //menu på hoejre knap
   topGUI(nuvaerendeMenu);
   midGUI(main1, main2);
   bottomGUI(naesteMenu, forrigeMenu);
   display.display();
 }
 
-void alarmGUI() {
+void alarmGUI(){
   //vis advarsel og gemte koordinater
   //evt hvid baggrund
 }
