@@ -23,22 +23,21 @@ void radioSetup() {
   TCCR1B = 0;// same for TCCR1B
   TCNT1  = 0;//initialize counter value to 0
   // set compare match register for 5.56hz increments
-  OCR1A = 17360;// (must be <65536)
+  OCR1A = 56249;// (must be <65536)
   // turn on CTC mode
   TCCR1B |= (1 << WGM12);
   // Set CS10 and CS12 bits for 1024 prescaler
-  TCCR1B |= (1 << CS12) | (0 << CS11) | (1 << CS10);
+  TCCR1B |= (1 << CS12) | (0 << CS11) | (0 << CS10);
   // enable timer compare interrupt
   TIMSK1 |= (1 << OCIE1A);
   sei(); //tillad interrupts
 }
 
 ISR(TIMER1_COMPA_vect) {
-  Serial.print(millis());
-  Serial.println("  interrupt");
   if (lastMessage + 2000 < millis()) {
+    digitalWrite(motorPin, HIGH);
+   // alarmGUI(); //problems here
     while (true) {
-      digitalWrite(motorPin, HIGH);
       tone(buzzer, 1000, 1000);
       Serial.println("test2");
     }

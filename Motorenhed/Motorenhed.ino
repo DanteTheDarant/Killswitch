@@ -8,8 +8,8 @@
 
 //pin opsaetning
 const int motorPin = 14; //pin hvorpå relæ er connect
-const int knapL = 33;
-const int knapR = 35; //kontakter til at styre rundt i menuer
+const int knapL = 18;
+const int knapR = 19; //kontakter til at styre rundt i menuer
 const int buzzer = 12;
 
 //Display opsaetning
@@ -48,14 +48,16 @@ int forbindelse = 0;//fortaeller om der er GPS forbindelse
 
 unsigned int menuCount = 10000; //counter til hvilken menu vi er i
 
+int knapCheck = 0;
+
 void setup() {
   Serial.begin(9600);
   Serial2.begin(9600);
   initDisplay();  //initialiserer displayet
   radioSetup();   //initialiserer GPS
   pinMode(motorPin, OUTPUT);
-  pinMode(knapL, INPUT);
-  pinMode(knapR, INPUT);
+  attachInterrupt(digitalPinToInterrupt(knapL), bMenu, RISING);
+  attachInterrupt(digitalPinToInterrupt(knapR), fMenu, RISING);
   pinMode(buzzer, OUTPUT);
   digitalWrite(motorPin, LOW);
   connectGUI();
@@ -72,14 +74,12 @@ void setup() {
 }
 
 void loop() {
-  Serial.print(millis());
-  Serial.println("  start");
-  if (digitalRead(knapL) == HIGH) {
-    menuCount--;
-  }
-  else if (digitalRead(knapR) == HIGH) {
-    menuCount++;
-  }
+//  if (digitalRead(knapL) == HIGH) {
+//    menuCount--;
+//  }
+//  else if (digitalRead(knapR) == HIGH) {
+//    menuCount++;
+//  }
   switch (menuCount % 4) {
     case 0:
       gpsGUI();
@@ -98,6 +98,5 @@ void loop() {
       //en menu
       break;
   }
-  Serial.print(millis());
-  Serial.println("  stop");
+  knapCheck = 0;
 }
