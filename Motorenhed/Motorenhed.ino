@@ -54,7 +54,7 @@ void setup() {
   Serial.begin(9600);
   Serial2.begin(9600);
   initDisplay();  //initialiserer displayet
-  radioSetup();   //initialiserer GPS
+  radioSetup();   //initialiserer radio
   pinMode(motorPin, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(knapL), bMenu, RISING);
   attachInterrupt(digitalPinToInterrupt(knapR), fMenu, RISING);
@@ -63,7 +63,7 @@ void setup() {
   connectGUI();
   int i = 0;
   while (i == 0) { //saa armbaand faar forbindelse foer kode slukker motoren
-    if (digitalRead(knapL) == HIGH || digitalRead(knapR) == HIGH) {
+    if (digitalRead(knapL) == HIGH && digitalRead(knapR) == HIGH) {
       i = 1;
     }
     if (textInt == 11) {

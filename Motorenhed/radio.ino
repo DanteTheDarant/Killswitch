@@ -18,11 +18,11 @@ void radioSetup() {
   radio.startListening();
   attachInterrupt(1, radioCheck, FALLING); //Opsætter et interrupt for Arduino interrupt pin 1(D3), for hvornår værdien falder fra 3.3 volt. Her kører den vores ISR.
 
-  //Setting up timer1 interrupt at ca 5.56Hz
+  //Setting up timer1 interrupt at ca 1.11 Hz eller 900 ms
   TCCR1A = 0;// set entire TCCR1A register to 0
   TCCR1B = 0;// same for TCCR1B
   TCNT1  = 0;//initialize counter value to 0
-  // set compare match register for 5.56hz increments
+  // set compare match register for 1.11 Hz eller 900 ms increments
   OCR1A = 56249;// (must be <65536)
   // turn on CTC mode
   TCCR1B |= (1 << WGM12);
