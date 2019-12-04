@@ -72,8 +72,8 @@ void connectGUI() { //GUI til connection med armbånd menu
 
 void gpsGUI() { //GUI til GPS menu
   display.clearDisplay();
-  String main1 = lat();               //funktion for koordinat
-  String main2 = lon();               //funktion for koordinat
+  String main1 = GPSLat;               //funktion for koordinat
+  String main2 = GPSLon;               //funktion for koordinat
   String nuvaerendeMenu = gpsMenu;    //nuvaerende menu
   String forrigeMenu = gemtDistMenu;  //menu på venstre knap
   String naesteMenu = kursMenu;       //menu på hoejre knap
@@ -85,7 +85,7 @@ void gpsGUI() { //GUI til GPS menu
 
 void kursGUI() { //GUI til kurs og fart menu
   display.clearDisplay();
-  String main1 = getSpeed();          //funktion for hastighed
+  String main1 = GPSSpeed;          //funktion for hastighed
   String main2 = "201";               //funktion for kurs skal indsættes
   String nuvaerendeMenu = kursMenu;   //nuvaerende menu
   String forrigeMenu = gpsMenu;       //menu på venstre knap

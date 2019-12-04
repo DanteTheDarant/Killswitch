@@ -35,6 +35,13 @@ const int pos2_y = 30;    //y-position på andet main element
 const int pos3_y = 49;    //y-position på menuskift-element
 unsigned long ms = 1000; //til GPS
 
+//GPS-værdier
+String GPSlat = "";
+String GPSlon = "";
+String GPSSpeed = "";
+String GPSCourse = "";
+String GPSTime = "";
+
 // Menu navne
 const String velkomstMenu = "Welcome";      // idk hvorfor det er på engelsk
 const String connectMenu = "Armb.";
@@ -54,7 +61,7 @@ void setup() {
   Serial.begin(9600);
   Serial2.begin(9600);
   initDisplay();  //initialiserer displayet
-  radioSetup();   //initialiserer radio
+  radioSetup();   //initialiserer GPS
   pinMode(motorPin, OUTPUT);
   attachInterrupt(digitalPinToInterrupt(knapL), bMenu, RISING);
   attachInterrupt(digitalPinToInterrupt(knapR), fMenu, RISING);
@@ -63,7 +70,7 @@ void setup() {
   connectGUI();
   int i = 0;
   while (i == 0) { //saa armbaand faar forbindelse foer kode slukker motoren
-    if (digitalRead(knapL) == HIGH && digitalRead(knapR) == HIGH) {
+    if (digitalRead(knapL) == HIGH || digitalRead(knapR) == HIGH) {
       i = 1;
     }
     if (textInt == 11) {
@@ -80,6 +87,7 @@ void loop() {
 //  else if (digitalRead(knapR) == HIGH) {
 //    menuCount++;
 //  }
+  GPSValues();
   switch (menuCount % 4) {
     case 0:
       gpsGUI();
