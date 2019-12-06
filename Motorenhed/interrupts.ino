@@ -24,13 +24,12 @@ void fMenu() {
  */
 ISR(TIMER1_COMPA_vect) {
   if (lastMessage + 680 < millis() && interruptDisable == 0) {
-    Serial.println("hey");
+    //Serial.println("SLUK MOTOR"); //til accepttest 2
     digitalWrite(motorPin, HIGH);
     gemtLat = GPSLat;
     gemtLon = GPSLon;
     alarm = 1;
     interruptDisable = 1;
-    //saet funktion ind til at gemme koordinat her
   }
 }
 
@@ -41,7 +40,7 @@ ISR(TIMER1_COMPA_vect) {
  * og forbindelse bliver genoprettet
  */
 void radioCheck() { 
-  Serial.println("hola");
+  //Serial.println("RADIOBESKED MODTAGET"); //til acceptest 1 og 2
   textInt = 0;
   if (radio.available()) {
     char text[32] = "";

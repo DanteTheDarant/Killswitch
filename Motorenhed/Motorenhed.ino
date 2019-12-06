@@ -1,4 +1,4 @@
-#include <SPI.h> //libraries needed for at bruge seriel kommunikation
+//#include <SPI.h> //libraries needed for at bruge seriel kommunikation
 #include <Wire.h>
 #include <Adafruit_GFX.h> //til at tegne ting paa display
 #include <Adafruit_SSD1306.h>//Til Display
@@ -86,7 +86,7 @@ void setup() {
       i = 1;
     }
     if (textInt == 11) {
-      digitalWrite(motorPin, LOW);  
+      digitalWrite(motorPin, LOW);
       lastMessage = millis();
       i = 1;
     }

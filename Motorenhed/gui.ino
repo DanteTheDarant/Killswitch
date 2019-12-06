@@ -15,6 +15,8 @@ void topGUI(String nowM) { //tegner top linjen paa skaermen med navnet paa nuvae
   }
   else if (interruptDisable == 1) { //laver en ikke fyldt trekant hvis forbindelse til armbånd er brudt
     display.drawTriangle(0, 0, 8, 0, 4, 7, SSD1306_WHITE);
+    tone(buzzer, 800, 100);
+    //Serial.println("Alarmtone, bip"); //accepttest 4
   }
   if (forbindelse == 1) { //laver en fyldt trekant hvis der er forbindelse til GPS
     display.fillCircle(posUr_x - 7, 4, 4, SSD1306_WHITE);
@@ -85,6 +87,7 @@ void gpsGUI() { //GUI til GPS menu
   topGUI(nuvaerendeMenu);
   midGUI(main1, main2);
   bottomGUI(naesteMenu, forrigeMenu);
+  //Serial.println("SKAERM ER OPDATERET"); //acceptest 3
   display.display();
 }
 
