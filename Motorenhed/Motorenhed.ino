@@ -1,16 +1,17 @@
-#include <SPI.h> //libraries needed for at bruge display
-#include <Wire.h> //findes hvis man søger i Arduino IDE'en
-#include <Adafruit_GFX.h> //til at tegne ting osv
+#include <SPI.h> //libraries needed for at bruge seriel kommunikation
+#include <Wire.h>
+#include <Adafruit_GFX.h> //til at tegne ting paa display
 #include <Adafruit_SSD1306.h>//Til Display
 #include <TinyGPS.h>//til GPS
 #include <nRF24L01.h>//til radio
 #include <RF24.h>//til radio
 
 //pin opsaetning
-const int motorPin = 14; //pin hvorpå relæ er connect
-const int knapL = 35;
-const int knapR = 33; //kontakter til at styre rundt i menuer
-const int buzzer = 12;
+const int motorPin = 14; //pin hvorpaa relae er connect
+const int knapL = 18;
+const int knapR = 19; //kontakter til at styre rundt i menuer
+const int buzzer = A11;
+const int resetButton = A0;
 
 //Display opsaetning
 #define SCREEN_WIDTH 128 // OLED display width, in pixels
@@ -19,24 +20,35 @@ const int buzzer = 12;
 #define OLED_RESET     -1 // Reset pin # (or -1 if sharing Arduino reset pin)
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
-//Radio opsætning
+//Radio opsaetning
 RF24 radio(7, 8); // CE, CSN
 const byte address[6] = "00000";
 unsigned long lastMessage = 2000000;
 int textInt = 0;
 
-//GPS opsætning
+//GPS opsaetning
 TinyGPS gps; // Creating GPS object
-const int pos0_y = 0;     //y-position på info linje i top
-const int posNowM_x = 15; //x-position for nuværende menu
+//GPS-variabler
+String GPSLat = "";
+String GPSLon = "";
+String GPSSpeed = "";
+String GPSCourse = "";
+String GPSTime = "";
+String gemtLat = "";
+String gemtLon = "";
+
+//GUI vaerdier til menu position
+const int pos0_y = 0;     //y-position paa info linje i top
+const int posNowM_x = 15; //x-position for nuvaerende menu
 const int posUr_x = 97;   //x-position for uret
-const int pos1_y = 12;    //y-position på første main element
-const int pos2_y = 30;    //y-position på andet main element
-const int pos3_y = 49;    //y-position på menuskift-element
+const int pos1_y = 12;    //y-position paa foerste main element
+const int pos2_y = 30;    //y-position paa andet main element
+const int pos3_y = 49;    //y-position paa menuskift-element
 unsigned long ms = 1000; //til GPS
 
+
 // Menu navne
-const String velkomstMenu = "Welcome";      // idk hvorfor det er på engelsk
+const String velkomstMenu = "Welcome";      // idk hvorfor det er paa engelsk
 const String connectMenu = "Armb.";
 const String gpsMenu = "GPS";
 const String kursMenu = "Kurs";
@@ -46,25 +58,35 @@ const String alarmMenu = "Alarm";
 
 int forbindelse = 0;//fortaeller om der er GPS forbindelse
 
-unsigned int menuCount = 10000; //counter til hvilken menu vi er i
+unsigned int menuCount = 10000; //counter til hvilken menu vi er i.
+//Starter hoej for at undgaa under/overflow
+
+//checks til alarm og interrupts
+bool knapCheck = 0;         //sikrer at der ikke bliver trykket dobbelt på menuknapper
+bool alarm = 0;             //bliver 1/true naar mand over bord
+bool interruptDisable = 0;  //deaktiverer funktionen der slukker motor hvis 1/true
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(38400);
   Serial2.begin(9600);
   initDisplay();  //initialiserer displayet
-  radioSetup();   //initialiserer GPS
+  radioSetup();   //initialiserer radio
   pinMode(motorPin, OUTPUT);
-  pinMode(knapL, INPUT);
-  pinMode(knapR, INPUT);
+  pinMode(resetButton, INPUT);
+  attachInterrupt(digitalPinToInterrupt(knapL), bMenu, RISING);
+  attachInterrupt(digitalPinToInterrupt(knapR), fMenu, RISING);
   pinMode(buzzer, OUTPUT);
-  digitalWrite(motorPin, LOW);
+  digitalWrite(motorPin, HIGH);
+  connectGUI();
   int i = 0;
   while (i == 0) { //saa armbaand faar forbindelse foer kode slukker motoren
-    connectGUI();
-    if (knapL == 1 && knapR == 1) {
+    if (digitalRead(resetButton) == HIGH) {
+      digitalWrite(motorPin, LOW);
+      interruptDisable = 1;
       i = 1;
     }
-    if (textInt==11) {
+    if (textInt == 11) {
+      digitalWrite(motorPin, LOW);  
       lastMessage = millis();
       i = 1;
     }
@@ -72,12 +94,7 @@ void setup() {
 }
 
 void loop() {
-  if (knapL == 1) {
-    menuCount--;
-  }
-  if (knapL == 1) {
-    menuCount++;
-  }
+  GPSValues();
   switch (menuCount % 4) {
     case 0:
       gpsGUI();
@@ -96,4 +113,18 @@ void loop() {
       //en menu
       break;
   }
+  int x = 1;
+  while (alarm == 1) {
+    if (digitalRead(resetButton) == HIGH) {
+      digitalWrite(motorPin, LOW);
+      alarm = 0;
+      noTone(buzzer);
+    }
+    else if (x == 1) {
+      alarmGUI();
+      tone(buzzer, 5000);
+      x = 0;
+    }
+  }
+  knapCheck = 0;
 }

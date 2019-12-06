@@ -1,3 +1,62 @@
+/*
+   Funktion der gemmer fart, kurs, lon, lat
+*/
+void GPSValues() {
+  forbindelse = 0;
+  float tempLat, tempLon, tempCourse;
+  unsigned long fix_age;
+  int gpsYear;
+  byte gpsMonth, gpsDay, gpsHour, gpsMinute, gpsSecond, gpsHundredth;
+  unsigned long start = millis();
+  do {
+    while (Serial2.available()) { // check for gps data
+      if (gps.encode(Serial2.read())) { // encode gps data
+        gps.f_get_position(&tempLat, &tempLon, &fix_age);
+
+        // Check validity of data
+        if (fix_age == TinyGPS::GPS_INVALID_AGE) {
+          Serial.println("No satellite found");
+        }
+        else if (fix_age > 5000) {
+          Serial.println("Possible stale data");
+        }
+        else {
+          GPSTime = "";
+          GPSCourse = "";
+          tempCourse = gps.f_course();
+          if (tempCourse < 10) {
+            GPSCourse.concat("00");
+          } else if (tempCourse < 100) {
+            GPSCourse.concat("0");
+          }
+          GPSCourse.concat(String(tempCourse, 1));
+
+          GPSSpeed = String(gps.f_speed_knots(), 0);
+
+          GPSLat = convertPos(tempLat, true);
+          GPSLon = convertPos(tempLon, false);
+
+          gps.crack_datetime(&gpsYear, &gpsMonth, &gpsDay, &gpsHour, &gpsMinute, &gpsSecond, &gpsHundredth);
+          GPSTime.concat(gpsHour + 1);
+          GPSTime.concat(":");
+          if (gpsMinute < 10) {
+            GPSTime.concat("0");
+          }
+          GPSTime.concat(gpsMinute);
+          forbindelse = 1;
+        }
+      }
+    }
+  } while (millis() - start < ms);
+  if (forbindelse == 0) {
+    GPSTime = "FEJL";
+    GPSCourse = "FEJL";
+    GPSSpeed = "FEJL";
+    GPSLat = "FEJL";
+    GPSLon = "FEJL";
+  }
+}
+
 String lat() {
   float lat = 0;
   float lon = 0;
@@ -101,7 +160,7 @@ String getSpeed() {
   return "FEJL";
 }
 
-String getCourse() { // VIRKER IKKE, SKAL ARBEJDES PÅ
+String getCourse() { // VIRKER IKKE, SKAL ARBEJDES Paa
   unsigned long start = millis();
   do {
     while (Serial2.available()) { // check for gps data
