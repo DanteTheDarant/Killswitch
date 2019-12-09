@@ -23,7 +23,7 @@ void fMenu() {
  * Hvis det er 2 sekunder siden funktionen besked modtaget slukkes motor
  */
 ISR(TIMER1_COMPA_vect) {
-  if (lastMessage + 680 < millis() && interruptDisable == 0) {
+  if (lastMessage + 680 <= millis() && interruptDisable == 0) {
     //Serial.println("SLUK MOTOR"); //til accepttest 2
     digitalWrite(motorPin, HIGH);
     gemtLat = GPSLat;

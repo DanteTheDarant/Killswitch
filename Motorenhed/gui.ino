@@ -10,6 +10,7 @@ void initDisplay() { //initialiserer display
 
 void topGUI(String nowM) { //tegner top linjen paa skaermen med navnet paa nuvaerende menu som input
 
+  //tjekker om der er forbindelse med GPS og armbaand foerst
   if (interruptDisable == 0) { //laver en fyldt trekant hvis der er forbindelse til armbånd
     display.fillTriangle(0, 0, 8, 0, 4, 7, SSD1306_WHITE);
   }
@@ -24,6 +25,7 @@ void topGUI(String nowM) { //tegner top linjen paa skaermen med navnet paa nuvae
   else if (forbindelse == 0) { //laver en ikke fyldt trekant hvis forbindelse til GPS er brudt
     display.drawCircle(posUr_x - 7, 4, 4, SSD1306_WHITE);
   }
+
   display.setTextSize(1);
   display.setTextColor(SSD1306_INVERSE);
   display.setCursor(posNowM_x, pos0_y);
@@ -33,8 +35,8 @@ void topGUI(String nowM) { //tegner top linjen paa skaermen med navnet paa nuvae
   display.drawLine(0, 9, 127, 9, SSD1306_WHITE); //linje til at adskille top linje fra resten
 }
 
-void midGUI(String element1, String element2) { //tegner main delen af GUI'et med de to hovedelemter som input
-  //main del af UI'et
+
+void midGUI(String element1, String element2) { //tegner main delen af GUI'et med de to hovedelemter som input (som strings)
   display.setTextSize(2);
   display.setCursor(1, pos1_y);
   display.println(element1);
@@ -42,14 +44,14 @@ void midGUI(String element1, String element2) { //tegner main delen af GUI'et me
   display.println(element2);
 }
 
-void bottomGUI(String nextM, String backM) {
-  //delen af UI'et der viser de andre menuer
+
+void bottomGUI(String nextM, String backM) {//delen af UI'et der viser navigation til andre menuer - input er strings med forrige og naeste menu
   display.setCursor(0, pos3_y);
   display.println(backM);
   display.setCursor(128 - (nextM.length() * 12), pos3_y);
   display.println(nextM);
 
-  // vaerdier til linjernes position
+  // vaerdier til linjer omkring tekst position
   int hStregPos = pos3_y - 2;                         // linjens hoejde
   int lStregPos = backM.length() * 12;                // venstre/midter-position
   int rStregPos = 127 - (nextM.length() * 12) - 2;    // hoejre/midter-position
@@ -63,9 +65,10 @@ void bottomGUI(String nextM, String backM) {
   display.drawLine(rStregPos, hStregPos, rStregPos, 63, SSD1306_WHITE);
 }
 
+
 void connectGUI() { //GUI til connection med armbaand menu
   display.clearDisplay();
-  display.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SSD1306_WHITE);
+  display.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SSD1306_WHITE); //gør baggrunden hvid
   topGUI("CONNECT");
   display.setTextColor(SSD1306_INVERSE);
   display.setCursor(1, 12);
@@ -79,8 +82,8 @@ void connectGUI() { //GUI til connection med armbaand menu
 
 void gpsGUI() { //GUI til GPS menu
   display.clearDisplay();
-  String main1 = GPSLat;               //funktion for koordinat
-  String main2 = GPSLon;               //funktion for koordinat
+  String main1 = GPSLat;              //variabel indeholdende koordinat
+  String main2 = GPSLon;              //variabel indeholdende koordinat
   String nuvaerendeMenu = gpsMenu;    //nuvaerende menu
   String forrigeMenu = gemtDistMenu;  //menu paa venstre knap
   String naesteMenu = kursMenu;       //menu paa hoejre knap
@@ -93,8 +96,8 @@ void gpsGUI() { //GUI til GPS menu
 
 void kursGUI() { //GUI til kurs og fart menu
   display.clearDisplay();
-  String main1 = GPSSpeed;            //funktion for hastighed
-  String main2 = GPSCourse;             //funktion for kurs skal indsaettes
+  String main1 = GPSSpeed;            //variabel indeholdende hastighed
+  String main2 = GPSCourse;           //variabel indeholdende kurs
   String nuvaerendeMenu = kursMenu;   //nuvaerende menu
   String forrigeMenu = gpsMenu;       //menu paa venstre knap
   String naesteMenu = gemtPosMenu;    //menu paa hoejre knap
@@ -117,7 +120,7 @@ void gPosGUI() { //GUI til menuen med den gemte position
   display.display();
 }
 
-void gDistGUI() {
+void gDistGUI() { //GUI til menuen med distance og kurs til gemt position
   display.clearDisplay();
   String main1 = "dist";                //funktion for dist til gemt pos
   String main2 = "kurs";                //funktion for kurs til gemt pos
@@ -130,7 +133,7 @@ void gDistGUI() {
   display.display();
 }
 
-void alarmGUI() {
+void alarmGUI() { //GUI til alarmen
   display.clearDisplay();
   display.fillRect(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, SSD1306_WHITE);
   display.drawTriangle(41, 1, 86, 1, 64, 40, SSD1306_BLACK);

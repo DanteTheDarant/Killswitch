@@ -1,5 +1,5 @@
 /*
-   Funktion der gemmer fart, kurs, lon, lat
+   Funktion der gemmer fart, kurs, lon, lat og tid
 */
 void GPSValues() {
   forbindelse = 0;
@@ -29,9 +29,10 @@ void GPSValues() {
           } else if (tempCourse < 100) {
             GPSCourse.concat("0");
           }
-          GPSCourse.concat(String(tempCourse, 1));
-
-          GPSSpeed = String(gps.f_speed_knots(), 0);
+          GPSCourse.concat(String(tempCourse, 1)); //sidste tal er antal decimaler
+          GPSCourse.concat(" grader");
+          GPSSpeed = String(gps.f_speed_knots(), 1); //sidste tal er antal decimaler
+          GPSSpeed.concat(" knob");
 
           GPSLat = convertPos(tempLat, true);
           GPSLon = convertPos(tempLon, false);
@@ -48,7 +49,7 @@ void GPSValues() {
       }
     }
   } while (millis() - start < ms);
-  if (forbindelse == 0) {
+  if (forbindelse == 0) { //hvis der ingen forbindelse er, printer den fejl
     GPSTime = "FEJL";
     GPSCourse = "FEJL";
     GPSSpeed = "FEJL";
@@ -57,61 +58,13 @@ void GPSValues() {
   }
 }
 
-String lat() {
-  float lat = 0;
-  float lon = 0;
-  unsigned long fix_age;
-  unsigned long start = millis();
-  do {
-    while (Serial2.available()) { // check for gps data
-      if (gps.encode(Serial2.read())) { // encode gps data
-        gps.f_get_position(&lat, &lon, &fix_age); // get latitude and longitude
-
-        // Check validity of data
-        if (fix_age == TinyGPS::GPS_INVALID_AGE) {
-          Serial.println("No satellite found");
-        } else if (fix_age > 5000) {
-          Serial.println("Possible stale data");
-        } else {
-          // Convert into degrees-decimal-minutes-format
-          forbindelse = 1;
-          return convertPos(lat, true);
-        }
-      }
-    }
-  } while (millis() - start < ms);
-  forbindelse = 0;
-  return "FEJL";
-}
-
-String lon() {
-  float lat = 0;
-  float lon = 0;
-  unsigned long fix_age;
-  unsigned long start = millis();
-  do {
-    while (Serial2.available()) { // check for gps data
-      if (gps.encode(Serial2.read())) // encode gps data
-      {
-        gps.f_get_position(&lat, &lon); // get latitude and longitude
-
-        if (fix_age == TinyGPS::GPS_INVALID_AGE) {
-          Serial.println("No satellite found");
-        } else if (fix_age > 5000) {
-          Serial.println("Possible stale data");
-        } else {
-          // Convert into degrees-decimal-minutes-format
-          forbindelse = 1;
-          return convertPos(lon, false);
-        }
-      }
-    }
-  } while (millis() - start < ms);
-  forbindelse = 0;
-  return "FEJL";
-}
-
-String convertPos(float value, boolean lat) {
+/*
+   Funktion der modtager en float og en bool
+   Floaten er en GPS vaerdi der bliver omregnet til det rette format
+   Bool'en skal vaere true eller false afhaengig af om vaerdien er latitude eller longitude
+   Outputtet er en string med tilfoejet prefix
+*/
+String convertPos(float value, bool lat) {
   int deg = (int)value;
   float decMin = value - (float)deg;
   decMin = decMin * 60.0;
@@ -143,60 +96,4 @@ String convertPos(float value, boolean lat) {
   }
   coordinate.concat(String(decMin, 1));
   return coordinate;
-}
-
-String getSpeed() {
-  unsigned long start = millis();
-  do {
-    while (Serial2.available()) { // check for gps data
-      if (gps.encode(Serial2.read())) // encode gps data
-      {
-        forbindelse = 1;
-        return String(gps.f_speed_knots(), 0);
-      }
-    }
-  } while (millis() - start < ms);
-  forbindelse = 0;
-  return "FEJL";
-}
-
-String getCourse() { // VIRKER IKKE, SKAL ARBEJDES Paa
-  unsigned long start = millis();
-  do {
-    while (Serial2.available()) { // check for gps data
-      if (gps.encode(Serial2.read())) // encode gps data
-      {
-        forbindelse = 1;
-        return String(gps.f_course(), 1);
-      }
-    }
-  } while (millis() - start < ms);
-  forbindelse = 0;
-  return "FEJL";
-}
-
-String getTime() {
-  int gpsYear;
-  unsigned long fix_age;
-  byte gpsMonth, gpsDay, gpsHour, gpsMinute, gpsSecond, gpsHundredth;
-  unsigned long start = millis();
-  do {
-    while (Serial2.available()) { // check for gps data
-      if (gps.encode(Serial2.read())) // encode gps data
-      {
-        gps.crack_datetime(&gpsYear, &gpsMonth, &gpsDay, &gpsHour, &gpsMinute, &gpsSecond, &gpsHundredth, &fix_age);
-        String tid = "";
-        tid.concat(gpsHour + 1);
-        tid.concat(":");
-        if (gpsMinute < 10) {
-          tid.concat("0");
-        }
-        tid.concat(gpsMinute);
-        forbindelse = 0;
-        return tid;
-      }
-    }
-  } while (millis() - start < ms);
-  forbindelse = 0;
-  return "FEJL";
 }
