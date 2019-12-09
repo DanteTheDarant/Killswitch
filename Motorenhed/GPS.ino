@@ -3,27 +3,29 @@
 */
 void GPSValues() {
   forbindelse = 0;
-  float tempLat, tempLon, tempCourse;
-  unsigned long fix_age;
-  int gpsYear;
-  byte gpsMonth, gpsDay, gpsHour, gpsMinute, gpsSecond, gpsHundredth;
+  float tempLat, tempLon, tempCourse;                                   //Værdier til at bruge i funktionerne
+  unsigned long fix_age;                                                //Værdier til at bruge i funktionerne
+  int gpsYear;                                                          //Værdier til at bruge i funktionerne
+  byte gpsMonth, gpsDay, gpsHour, gpsMinute, gpsSecond, gpsHundredth;   //Værdier til at bruge i funktionerne
   unsigned long start = millis();
   do {
-    while (Serial2.available()) { // check for gps data
-      if (gps.encode(Serial2.read())) { // encode gps data
-        gps.f_get_position(&tempLat, &tempLon, &fix_age);
+    while (Serial2.available()) { // Så længe der er forbindelse til satellitterne
+      if (gps.encode(Serial2.read())) { //Hvis der er noget data at læse, encode det, så det bliver normale tal
+        gps.f_get_position(&tempLat, &tempLon, &fix_age); // Funktion til at få længe- og breddegrader
 
-        // Check validity of data
-        if (fix_age == TinyGPS::GPS_INVALID_AGE) {
+        // check for, om der er kommet et satellit-fix for nylig
+        if (fix_age == TinyGPS::GPS_INVALID_AGE) { // Ingen forbindelse til satellitter
           Serial.println("No satellite found");
         }
-        else if (fix_age > 5000) {
+        else if (fix_age > 5000) { // Gammel forbindelse til satellitter.
           Serial.println("Possible stale data");
         }
-        else {
-          GPSTime = "";
-          GPSCourse = "";
-          tempCourse = gps.f_course();
+        else { // God data
+          GPSTime = "";    //Tomme strings, som bliver fyldt længere nede
+          GPSCourse = "";  //Tomme strings, som bliver fyldt længere nede
+          tempCourse = gps.f_course(); //Funktion for at finde kursen i grader
+          
+          // For at kursen altid fylder 3 cifre, bliver der indsat et eller to 0'er
           if (tempCourse < 10) {
             GPSCourse.concat("00");
           } else if (tempCourse < 100) {
@@ -34,13 +36,19 @@ void GPSValues() {
           GPSSpeed = String(gps.f_speed_knots(), 1); //sidste tal er antal decimaler
           GPSSpeed.concat(" knob");
 
-          GPSLat = convertPos(tempLat, true);
-          GPSLon = convertPos(tempLon, false);
-
-          gps.crack_datetime(&gpsYear, &gpsMonth, &gpsDay, &gpsHour, &gpsMinute, &gpsSecond, &gpsHundredth);
-          GPSTime.concat(gpsHour + 1);
+          GPSLat = convertPos(tempLat, true);   //Omformatering til degrees-decimalminutes-format
+          GPSLon = convertPos(tempLon, false);  //Omformatering til degrees-decimalminutes-format
+          
+          gps.crack_datetime(&gpsYear, &gpsMonth, &gpsDay, &gpsHour, &gpsMinute, &gpsSecond, &gpsHundredth); // Funktion for tid
+          
+          gpsHour += 1; //Tidszone-fix
+          if (gpsHour < 10) { //Så timerne altid fylder 2 cifre
+             GPSTime.concat("0");
+          }
+          GPSTime.concat(gpsHour); 
           GPSTime.concat(":");
-          if (gpsMinute < 10) {
+             
+          if (gpsMinute < 10) { //Så minutterne altid fylder 2 cifre
             GPSTime.concat("0");
           }
           GPSTime.concat(gpsMinute);
@@ -49,7 +57,7 @@ void GPSValues() {
       }
     }
   } while (millis() - start < ms);
-  if (forbindelse == 0) { //hvis der ingen forbindelse er, printer den fejl
+  if (forbindelse == 0) { //hvis der ingen forbindelse er, printer den "FEJL"
     GPSTime = "FEJL";
     GPSCourse = "FEJL";
     GPSSpeed = "FEJL";
@@ -65,26 +73,26 @@ void GPSValues() {
    Outputtet er en string med tilfoejet prefix
 */
 String convertPos(float value, bool lat) {
-  int deg = (int)value;
-  float decMin = value - (float)deg;
-  decMin = decMin * 60.0;
+  int deg = (int)value;                      //For at få alt inden kommaet
+  float decMin = value - (float)deg;         //For at få alt efter kommaet
+  decMin = decMin * 60.0;                    // I ddm-format er dm 1/60 af grader
   String coordinate = "";
-  if (lat == true) {
-    if (abs(deg) == deg || deg == 0) {
+  if (lat == true) { //Hvis lat er true, skal den vælge mellem N eller S.
+    if (abs(deg) == deg || deg == 0) { //Hvis den er positiv, skal det være N, ellers S
       coordinate.concat("N:");
     } else {
       coordinate.concat("S:");
     }
 
-  } else {
-    if (abs(deg) == deg || deg == 0) {
+  } else { //Hvis lat er false, skal den vælge mellem E eller W.
+    if (abs(deg) == deg || deg == 0) { //Hvis den er positiv, skal det være E, ellers W
       coordinate.concat("E:");
     } else {
       coordinate.concat("W:");
     }
   }
 
-  if (deg < 10) {
+  if (deg < 10) { // Sørger for at graderne altid har det samme antal cifre
     coordinate.concat("00");
   } else if (deg < 100) {
     coordinate.concat("0");
